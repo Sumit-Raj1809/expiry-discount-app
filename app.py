@@ -1,9 +1,14 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
+
+# Setting up the app configuration from environment variables
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')  # Secure random key for sessions
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///products.db')  # Use env var for DB URL, fallback to SQLite for local
+
 db = SQLAlchemy(app)
 
 # Database model
@@ -115,5 +120,6 @@ def expiry_chart_data():
     })
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
 
